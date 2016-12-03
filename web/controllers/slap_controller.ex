@@ -43,7 +43,7 @@ defmodule BitchSlack.SlapController do
     case command do
       "/bitch" ->
         %SlackMessage{
-          response_type: "ephemeral",
+          response_type: "in_channel",
           text: "@#{username}: If you're a bitch!",
           attachments: [%{text: ":carlton:"}]
         }
