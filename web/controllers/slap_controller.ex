@@ -1,16 +1,25 @@
+defmodule SlackMessage do
+  @derive [Poison.Encoder]
+  defstruct [:response_type, :text, :attachments]
+end
+
 defmodule BitchSlack.SlapController do
   use BitchSlack.Web, :controller
 
   def slap(conn, post_params) do
     param_token = Map.get(post_params, "token")
     command = Map.get(post_params, "command")
-    response = command_response(command)
+    response_url = Map.get(post_params, "response_url")
+    username = Map.get(post_params, "user_name")
+    response = command_response(command, username)
 
     cond do
       token_invalid?(param_token) ->
         conn |> send_resp(500, "Invalid token")
       response ->
-        json conn, %{response_type: "in_channel", text: response.text, attachments: response.attachments}
+
+        HTTPoison.post response_url, response
+        conn |> send_resp(200, "")
       true ->
         conn |> send_resp(404, "")
     end
@@ -25,10 +34,14 @@ defmodule BitchSlack.SlapController do
     end
   end
 
-  def command_response(command) do
+  def command_response(command, username) do
     case command do
       "/bitch" ->
-        %{text: "If you're a bitch!", attachments: [%{text: ":carlton:"}]}
+        %SlackMessage{
+          response_type: "ephemeral",
+          text: "@#{username}: If you're a bitch!",
+          attachments: [%{text: ":carlton:"}]
+        }
       _ -> false
     end
   end

@@ -1,8 +1,3 @@
-defmodule JSONResponse do
-  @derive [Poison.Encoder]
-  defstruct [:response_type, :text, :attachments]
-end
-
 defmodule BitchSlack.SlapControllerTest do
   use ExUnit.Case, async: false
   use Plug.Test
@@ -15,20 +10,12 @@ defmodule BitchSlack.SlapControllerTest do
     end
   end
 
-  test "/slap returns our favorite phrase" do
-
-    response = conn(:post, "/slap", %{command: "/bitch", token: "12345"})
-    |> send_request
-
-    json = Poison.decode!(response.resp_body, as: %JSONResponse{})
-
-    assert response.status == 200
-    assert json.text == "If you're a bitch!"
-    assert json.attachments == [%{"text" => ":carlton:"}]
-  end
-
   test "/slap returns 200 with a valid api key" do
-    response = conn(:post, "/slap", %{command: "/bitch", token: "12345"})
+    response = conn(:post, "/slap", %{
+      command: "/bitch",
+      response_url: "localhost:4000",
+      token: "12345"
+    })
     |> send_request
 
     assert response.status == 200
