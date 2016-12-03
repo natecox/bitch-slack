@@ -12,7 +12,7 @@ config :bitch_slack,
 # Configures the endpoint
 config :bitch_slack, BitchSlack.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "brt3N+gpBHHJrJyodNl6sYbaefPe1zVav5oOPbecqKP6qUm4W+k/WO/JKNv8g0k1",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: BitchSlack.ErrorView, accepts: ~w(html json)],
   pubsub: [name: BitchSlack.PubSub,
            adapter: Phoenix.PubSub.PG2]
