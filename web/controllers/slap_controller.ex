@@ -10,7 +10,7 @@ defmodule BitchSlack.SlapController do
       token_invalid?(param_token) ->
         conn |> send_resp(500, param_token)
       response ->
-        text conn, response
+        json conn, %{response_type: "in_channel", text: response}
       true ->
         conn |> send_resp(404, "")
     end
