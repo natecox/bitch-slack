@@ -3,6 +3,12 @@ defmodule SlackMessage do
   defstruct [:response_type, :text, :attachments]
 end
 
+defmodule SlackDelayedMessage do
+  def post(url, message) do
+    HTTPoison.post! url, Poison.encode!(message)
+  end
+end
+
 defmodule BitchSlack.SlapController do
   use BitchSlack.Web, :controller
 
@@ -11,14 +17,13 @@ defmodule BitchSlack.SlapController do
     command = Map.get(post_params, "command")
     response_url = Map.get(post_params, "response_url")
     username = Map.get(post_params, "user_name")
-    response = command_response(command, username)
+    message = command_response(command, username)
 
     cond do
       token_invalid?(param_token) ->
         conn |> send_resp(500, "Invalid token")
-      response ->
-
-        HTTPoison.post response_url, response
+      message ->
+        SlackDelayedMessage.post(response_url, message)
         conn |> send_resp(200, "")
       true ->
         conn |> send_resp(404, "")

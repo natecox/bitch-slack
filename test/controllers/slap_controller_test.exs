@@ -1,6 +1,7 @@
 defmodule BitchSlack.SlapControllerTest do
   use ExUnit.Case, async: false
   use Plug.Test
+  import Mock
 
   setup do
     System.put_env("SLACK_TOKEN", "12345")
@@ -11,14 +12,14 @@ defmodule BitchSlack.SlapControllerTest do
   end
 
   test "/slap returns 200 with a valid api key" do
-    response = conn(:post, "/slap", %{
-      command: "/bitch",
-      response_url: "localhost:4000",
-      token: "12345"
-    })
-    |> send_request
-
-    assert response.status == 200
+    with_mock SlackDelayedMessage, [post: fn(url, message) -> true end] do
+      response = conn(:post, "/slap", %{
+        command: "/bitch",
+        response_url: "https://example.com",
+        token: "12345"
+      }) |> send_request
+      assert response.status == 200
+    end
   end
 
   test "/slap returns 500 without a valid api key" do
