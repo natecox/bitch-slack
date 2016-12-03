@@ -1,6 +1,6 @@
 defmodule JSONResponse do
   @derive [Poison.Encoder]
-  defstruct [:response_type, :text]
+  defstruct [:response_type, :text, :attachments]
 end
 
 defmodule BitchSlack.SlapControllerTest do
@@ -24,6 +24,7 @@ defmodule BitchSlack.SlapControllerTest do
 
     assert response.status == 200
     assert json.text == "If you're a bitch!"
+    assert json.attachments == [%{"text" => ":carlton:"}]
   end
 
   test "/slap returns 200 with a valid api key" do
@@ -38,6 +39,7 @@ defmodule BitchSlack.SlapControllerTest do
     |> send_request
 
     assert response.status == 500
+    assert response.resp_body == "Invalid token"
   end
 
   defp send_request(conn) do

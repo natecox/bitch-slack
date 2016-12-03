@@ -8,9 +8,9 @@ defmodule BitchSlack.SlapController do
 
     cond do
       token_invalid?(param_token) ->
-        conn |> send_resp(500, param_token)
+        conn |> send_resp(500, "Invalid token")
       response ->
-        json conn, %{response_type: "in_channel", text: response}
+        json conn, %{response_type: "in_channel", text: response.text, attachments: response.attachments}
       true ->
         conn |> send_resp(404, "")
     end
@@ -27,7 +27,8 @@ defmodule BitchSlack.SlapController do
 
   def command_response(command) do
     case command do
-      "/bitch" -> "If you're a bitch!"
+      "/bitch" ->
+        %{text: "If you're a bitch!", attachments: [%{text: ":carlton:"}]}
       _ -> false
     end
   end
