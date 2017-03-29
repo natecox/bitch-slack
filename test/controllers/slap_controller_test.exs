@@ -12,7 +12,7 @@ defmodule BitchSlack.SlapControllerTest do
   end
 
   test "/slap returns 200 with a valid api key" do
-    with_mock SlackDelayedMessage, [post: fn(url, message) -> true end] do
+    with_mock SlapUtils, [post_delayed_message: fn(params) -> %{message: "", code: 200} end] do
       response = conn(:post, "/slap", %{
         command: "/bitch",
         response_url: "https://example.com",
