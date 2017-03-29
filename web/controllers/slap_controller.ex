@@ -7,7 +7,6 @@ defmodule SlapUtils do
   def post_delayed_message(params) do
     params
     |> validate_token
-    |> IO.inspect
     |> get_response_message
     |> send_message
   end
