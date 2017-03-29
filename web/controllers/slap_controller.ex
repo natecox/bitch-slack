@@ -37,6 +37,7 @@ defmodule SlapUtils do
   
   def send_message(params) do
     HTTPoison.post! params.url, Poison.encode!(params.message)
+    %{message: "", code: 200}
   end
 
   def get_response_message(params) do
