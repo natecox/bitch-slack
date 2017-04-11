@@ -46,8 +46,8 @@ defmodule SlapUtils do
   def command_response("/bitch", username) do
     %SlackMessage{
       response_type: "in_channel",
-      text: "@#{username}: If you're a bitch!",
-      attachments: [%{text: ":carlton:"}]
+      text         : "@#{username}: If you're a bitch!",
+      attachments  : [%{text: ":carlton:"}]
     }
   end
 
